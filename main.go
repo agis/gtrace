@@ -21,6 +21,8 @@ func main() {
 	}
 	fmt.Printf("Attached to process %d...\n", pid)
 
+	// PtraceAttach sends a SIGSTOP to the child; ensure it has properly
+	// stopped
 	s := new(unix.WaitStatus)
 	unix.Wait4(pid, s, 0, new(unix.Rusage))
 
@@ -30,23 +32,23 @@ func main() {
 	}
 
 	for {
-		regs := unix.PtraceRegs{}
+		regs := new(unix.PtraceRegs)
 
 		if waitSyscall(pid) != 0 {
 			os.Exit(0)
 		}
 
-		err = unix.PtraceGetRegs(pid, &regs)
+		err = unix.PtraceGetRegs(pid, regs)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Print(regs.Orig_rax, " = ")
+		fmt.Printf("syscall(%d) = ", regs.Orig_rax)
 
 		if waitSyscall(pid) != 0 {
 			panic("process exited!")
 		}
 
-		err = unix.PtraceGetRegs(pid, &regs)
+		err = unix.PtraceGetRegs(pid, regs)
 		if err != nil {
 			panic(err)
 		}
@@ -63,7 +65,6 @@ func waitSyscall(pid int) int {
 		}
 
 		unix.Wait4(pid, s, 0, new(unix.Rusage))
-
 		if s.Stopped() && (s.StopSignal()&0x80 > 0) {
 			return 0
 		} else if s.Exited() {

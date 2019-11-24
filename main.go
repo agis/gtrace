@@ -3,21 +3,26 @@ package main
 //go:generate go run gen/syscall_gen.go
 
 import (
+	"flag"
 	"fmt"
 	"os"
-	"strconv"
 	"syscall"
 
 	"golang.org/x/sys/unix"
 )
 
+var pid int
+
 func main() {
-	pid, err := strconv.Atoi(os.Args[1])
-	if err != nil {
-		panic(err)
+	flag.IntVar(&pid, "p", 0, "PID of the process to trace")
+	flag.Parse()
+
+	if pid == 0 {
+		fmt.Println("Provide a valid process ID with -p")
+		os.Exit(1)
 	}
 
-	err = unix.PtraceAttach(pid)
+	err := unix.PtraceAttach(pid)
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +41,9 @@ func main() {
 	for {
 		regs := new(unix.PtraceRegs)
 
-		if waitSyscall(pid) != 0 {
+		exitCode := waitSyscall(pid)
+		if exitCode != 0 {
+			fmt.Println("Process exited with", exitCode)
 			os.Exit(0)
 		}
 
@@ -46,8 +53,9 @@ func main() {
 		}
 		fmt.Printf("%s = ", Syscalls[regs.Orig_rax])
 
-		if waitSyscall(pid) != 0 {
-			fmt.Println("Process exited")
+		exitCode = waitSyscall(pid)
+		if exitCode != 0 {
+			fmt.Println("Process exited with", exitCode)
 			os.Exit(0)
 		}
 

@@ -33,10 +33,10 @@ write = 2
 
 ## Feature work
 
-- [] Decode arguments
-- [] terminal GUI with live statistics/counters
-- [] filter for certain syscalls
-- [] ARM support
+- [ ] Decode arguments
+- [ ] terminal GUI with live statistics/counters
+- [ ] filter for certain syscalls
+- [ ] ARM support
 
 ## Building
 

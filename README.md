@@ -8,7 +8,9 @@ not use it in mission-critical environments.
 ## Installation
 
 ```golang
-$ go get github.com/agis/gtrace
+$ git clone git@github.com:agis/gtrace.git
+$ cd gtrace
+$ go generate && go build
 ```
 
 ## Usage
@@ -31,10 +33,10 @@ write = 2
 
 ## Feature work
 
-[] Decode arguments
-[] terminal GUI with live statistics/counters
-[] filter for certain syscalls
-[] ARM support
+- [] Decode arguments
+- [] terminal GUI with live statistics/counters
+- [] filter for certain syscalls
+- [] ARM support
 
 ## Building
 
@@ -42,6 +44,3 @@ write = 2
 $ go generate
 $ go build
 ```
-
-## License
-

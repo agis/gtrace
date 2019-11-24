@@ -1,5 +1,7 @@
 package main
 
+//go:generate go run gen/syscall_gen.go
+
 import (
 	"fmt"
 	"os"
@@ -42,10 +44,11 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("syscall(%d) = ", regs.Orig_rax)
+		fmt.Printf("%s = ", Syscalls[regs.Orig_rax])
 
 		if waitSyscall(pid) != 0 {
-			panic("process exited!")
+			fmt.Println("Process exited")
+			os.Exit(0)
 		}
 
 		err = unix.PtraceGetRegs(pid, regs)

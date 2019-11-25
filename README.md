@@ -16,7 +16,7 @@ $ go generate && go build
 ## Usage
 
 Currently only attaching to an already running process is supported. Also,
-argument are not decoded yet.
+arguments are not decoded yet.
 
 Attach to a process by specifying its pid:
 

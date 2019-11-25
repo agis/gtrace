@@ -7,10 +7,8 @@ not use it in mission-critical environments.
 
 ## Installation
 
-```golang
-$ git clone git@github.com:agis/gtrace.git
-$ cd gtrace
-$ go generate && go build
+```shell
+$ go get -u github.com/agis/gtrace
 ```
 
 ## Usage

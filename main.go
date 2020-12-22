@@ -52,7 +52,18 @@ func main() {
 			panic(err)
 		}
 		fmt.Printf("%s = ", Syscalls[regs.Orig_rax])
+		//rdi   rsi   rdx   r10   r8    r9
 
+		fmt.Println("1st arg", regs.Rdi)
+
+		out := make([]byte, 200)
+		_, err = unix.PtracePeekUser(pid, uintptr(regs.Rsi), out)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("arg2: %s\n", string(out))
+
+		//func PtracePeekUser(pid int, addr uintptr, out []byte) (count int, err error) {
 		exitCode = waitSyscall(pid)
 		if exitCode != 0 {
 			fmt.Println("Process exited with", exitCode)
